@@ -17,7 +17,7 @@
 
 > Ví dụ một dòng log JSON em quan sát được có dạng:
 
-```json
+```json```
 {"event":"request_completed","method":"POST","path":"/ask","status_code":401,"user_id":"anonymous"}
 
 ### Câu 3 — Kích thước image (CP2)
