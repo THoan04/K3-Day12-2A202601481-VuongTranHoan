@@ -1,5 +1,4 @@
 # Phiếu Phản Ánh — K3 Ngày 12
-# Phiếu Phản Ánh — K3 Ngày 12
 
 > **Bài làm cá nhân.** Các câu trả lời dưới đây được viết dựa trên quá trình chạy và kiểm tra thực tế của em.
 
