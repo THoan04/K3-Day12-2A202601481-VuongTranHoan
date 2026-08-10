@@ -24,7 +24,7 @@
 
 Em đã build hai phiên bản Docker image để so sánh:
 
-```bash
+```bash```
 docker build -f Dockerfile.single -t agent:single .
 docker build -t agent:multi .
 docker images agent
