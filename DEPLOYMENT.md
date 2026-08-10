@@ -8,51 +8,56 @@
 
 ## Thông Tin Học Viên
 
-| Mục | Nội dung |
-|-----|----------|
-| Họ và tên | (điền họ tên) |
-| Mã học viên | (điền mã học viên) |
-| Repo | (điền link repo DAY12-...) |
+| Mục         | Nội dung                           |
+| ----------- | ---------------------------------- |
+| Họ và tên   | Vương Trần Hoàn                    |
+| Mã học viên | 2A202601481                        |
+| Repo        | K3-Day12-2A202601481-VuongTranHoan |
 
 ## Service
 
-| Mục | Nội dung |
-|-----|----------|
-| Public URL | https://TODO-thay-bang-url-that.up.railway.app |
-| Platform | Railway / Render / Cloud Run — (điền platform bạn dùng) |
-| Ngày deploy | (điền ngày) |
+| Mục         | Nội dung                        |
+| ----------- | ------------------------------- |
+| Public URL  | Local: http://localhost:8000    |
+| Platform    | Railway (Local Fallback — chưa deploy public) |
+| Ngày deploy | 10/08/2026                      |
 
 ## Biến Môi Trường Đã Set Trên Cloud
 
 Ghi tên biến và **nguồn giá trị**, không ghi giá trị:
 
-| Biến | Đã set | Ghi chú |
-|------|--------|---------|
-| `PORT` | ✅ | platform tự gán |
-| `AGENT_API_KEY` | ✅ | đặt trong dashboard, không nằm trong repo |
-| `REDIS_URL` | ✅ | (điền: Redis add-on của platform / Upstash / ...) |
-| `RATE_LIMIT_PER_MINUTE` | ✅ | 10 |
-| `MONTHLY_BUDGET_USD` | ✅ | 10.0 |
-| `LOG_LEVEL` | ✅ | INFO |
+| Biến                    | Đã set | Ghi chú                                |
+| ----------------------- | ------ | -------------------------------------- |
+| `PORT`                  | ✅      | Docker service                         |
+| `AGENT_API_KEY`         | ✅      | đặt trong `.env`, không nằm trong repo |
+| `REDIS_URL`             | ✅      | Redis container trong Docker Compose   |
+| `RATE_LIMIT_PER_MINUTE` | ✅      | 10                                     |
+| `MONTHLY_BUDGET_USD`    | ✅      | 10.0                                   |
+| `LOG_LEVEL`             | ✅      | INFO                                   |
+| `LOCAL_FALLBACK`        | ✅      | true                                   |
 
 ## Lệnh Kiểm Tra
 
-Thay `<URL>` bằng Public URL ở trên:
+Service local:
+
+```text
+http://localhost:8000
+```
 
 ```bash
 # 1. Liveness — mong đợi 200 {"status":"ok"}
-curl -i <URL>/health
+curl -i http://localhost:8000/health
 
 # 2. Readiness — mong đợi 200 {"status":"ready"} (đã nối được Redis)
-curl -i <URL>/ready
+curl -i http://localhost:8000/ready
 
 # 3. Không có API key — mong đợi 401
-curl -i -X POST <URL>/ask \
+curl -i -X POST http://localhost:8000/ask \
   -H "Content-Type: application/json" \
   -d '{"question":"Hello"}'
 
 # 4. Có API key — mong đợi 200 kèm câu trả lời
-curl -i -X POST <URL>/ask \
+curl -i -X POST http://localhost:8000/ask \
   -H "Content-Type: application/json" \
   -H "X-API-Key: $AGENT_API_KEY" \
   -H "X-User-Id: sv-test" \
@@ -60,7 +65,7 @@ curl -i -X POST <URL>/ask \
 
 # 5. Rate limit — gọi 15 lần, những lần cuối phải trả 429
 for i in $(seq 1 15); do
-  curl -s -o /dev/null -w "%{http_code} " -X POST <URL>/ask \
+  curl -s -o /dev/null -w "%{http_code} " -X POST http://localhost:8000/ask \
     -H "Content-Type: application/json" \
     -H "X-API-Key: $AGENT_API_KEY" \
     -H "X-User-Id: sv-test" \
@@ -72,22 +77,30 @@ done; echo
 
 Dán output của các lệnh trên vào đây:
 
-```
-(điền output)
+```text
+GET /health
+HTTP 200
+
+GET /ready
+HTTP 200
+
+POST /ask không có API key
+HTTP 401
+{"detail":"invalid or missing API key"}
 ```
 
 ## Ảnh Chụp Màn Hình
 
 Đặt ảnh trong thư mục `screenshots/`:
 
-- `screenshots/dashboard.png` — trang quản lý service trên platform
+- `screenshots/dashboard.png` — không áp dụng vì sử dụng Local Fallback
 - `screenshots/health.png` — kết quả gọi `/health` từ trình duyệt hoặc curl
 
 ---
 
 ## Nếu Dùng Phương Án Dự Phòng
 
-Không đăng ký được tài khoản cloud? Vẫn nộp được bài, nhưng CP5 tối đa 60% điểm:
+Không đăng ký tài khoản cloud nên sử dụng phương án Local Fallback.
 
 1. Đặt `LOCAL_FALLBACK=true` trong `.env`
 2. Chạy `docker compose up -d` rồi kiểm tra `docker compose ps`
@@ -96,6 +109,10 @@ Không đăng ký được tài khoản cloud? Vẫn nộp được bài, nhưng
    `http://localhost:8000`
 5. Ghi rõ lý do không deploy được vào phần dưới đây:
 
-```
-(điền lý do nếu dùng phương án dự phòng, ngược lại xóa mục này)
+Sử dụng phương án Local Fallback bằng Docker Compose thay cho public cloud deployment.
+
+Service chạy local tại:
+
+```text
+http://localhost:8000
 ```

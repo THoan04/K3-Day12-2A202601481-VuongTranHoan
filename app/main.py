@@ -78,11 +78,7 @@ def health():
     if lifecycle.shutting_down:
         return JSONResponse(
             status_code=503,
-            content={
-                "status": "shutting_down",
-                "service": SERVICE_NAME,
-                "version": SERVICE_VERSION,
-            },
+            content={"status": "shutting_down"},
         )
 
     return {
