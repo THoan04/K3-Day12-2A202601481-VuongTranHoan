@@ -24,15 +24,13 @@
 
 Em đã build hai phiên bản Docker image để so sánh:
 
-```bash```
-docker build -f Dockerfile.single -t agent:single .
-docker build -t agent:multi .
-docker images agent
-REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
-agent        single    d1d006b65079   17 seconds ago   287MB
-agent        multi     ce6c9305e1bd   14 minutes ago   270MB
+| Bản | Image | Dung lượng |
+|---|---|---:|
+| 1-stage (bản đầu) | `agent:single` | **287 MB** |
+| Multi-stage | `agent:multi` | **270 MB** |
+| Chênh lệch | | **17 MB** |
 
-Image multi-stage nhỏ hơn image 1-stage khoảng 17 MB. Nguyên nhân là multi-stage tách quá trình cài đặt dependency ở stage builder và chỉ copy phần cần thiết (/install) sang stage production. Các thành phần phục vụ quá trình build không cần thiết trong image production được loại bỏ khỏi final image. Vì vậy image cuối gọn hơn và giảm lượng thành phần không cần thiết khi triển khai.
+> Image multi-stage nhỏ hơn image 1-stage khoảng **17 MB**. Nguyên nhân là multi-stage tách quá trình cài đặt dependency ở stage builder và chỉ copy phần cần thiết (`/install`) sang stage production. Các thành phần phục vụ quá trình build không cần thiết trong image production được loại bỏ khỏi final image. Vì vậy image cuối gọn hơn và giảm lượng thành phần không cần thiết khi triển khai.
 
 ---
 
